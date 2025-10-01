@@ -27,7 +27,7 @@ function MiniTetromino({ type }) {
   return (
     <div
       className="mini-grid"
-      style={{ gridTemplateColumns: 'repeat(' + PREVIEW_SIZE + ', 1fr)' }}
+      style={{ gridTemplateColumns: 'repeat(' + PREVIEW_SIZE + ', var(--mini-cell-size))' }}
     >
       {Array.from({ length: PREVIEW_SIZE * PREVIEW_SIZE }).map((_, index) => {
         const y = Math.floor(index / PREVIEW_SIZE);

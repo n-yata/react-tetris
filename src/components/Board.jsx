@@ -4,7 +4,7 @@ export function Board({ board }) {
   return (
     <div
       className="board"
-      style={{ gridTemplateColumns: 'repeat(' + BOARD_WIDTH + ', 1fr)' }}
+      style={{ gridTemplateColumns: 'repeat(' + BOARD_WIDTH + ', var(--cell-size))' }}
     >
       {board.map((row, y) =>
         row.map((cell, x) => {

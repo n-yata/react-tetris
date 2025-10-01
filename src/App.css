@@ -1,9 +1,10 @@
+
 .app {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  padding: 1.5rem;
-  gap: 1.5rem;
+  padding: clamp(1rem, 2vw, 1.5rem);
+  gap: clamp(1rem, 2.5vw, 1.5rem);
 }
 
 .app-header,
@@ -13,42 +14,102 @@
 
 .app-header h1 {
   margin: 0;
-  font-size: 2.5rem;
+  font-size: clamp(2rem, 4vw, 2.6rem);
   letter-spacing: 0.05em;
 }
 
 .layout {
   display: flex;
   justify-content: center;
-  gap: 2rem;
+  align-items: flex-start;
+  gap: clamp(1.25rem, 3vw, 2rem);
   flex: 1;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .board-section {
-  position: relative;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.75rem;
 }
+
+.touch-controls {
+  display: none;
+}
+
+.touch-controls .touch-row {
+  display: flex;
+  justify-content: center;
+  gap: 0.65rem;
+  margin: 0.35rem 0;
+}
+
+.touch-controls .touch-button {
+  min-width: 72px;
+  min-height: 54px;
+  border: none;
+  border-radius: 0.75rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  background: rgba(56, 189, 248, 0.2);
+  color: #f8fafc;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.45);
+  transition: transform 0.15s ease, background 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  user-select: none;
+}
+
+.touch-controls .touch-button.rotate {
+  font-size: 1rem;
+  padding: 0 1rem;
+  background: rgba(168, 85, 247, 0.35);
+}
+
+.touch-controls .touch-button:active {
+  transform: scale(0.95);
+  background: rgba(56, 189, 248, 0.35);
+}
+
+.touch-controls .touch-button.rotate:active {
+  background: rgba(168, 85, 247, 0.55);
+}
+
+.touch-controls .touch-spacer {
+  width: 72px;
+}
+
+
 
 .board-wrapper {
   position: relative;
-  padding: 1rem;
+  padding: clamp(0.75rem, 2vw, 1rem);
   background: rgba(15, 23, 42, 0.85);
-  border-radius: 1rem;
+  border-radius: clamp(0.9rem, 2vw, 1.1rem);
   box-shadow: 0 20px 45px rgba(15, 23, 42, 0.45);
+  width: min(100%, calc(var(--cell-size) * 10 + var(--cell-gap) * 9));
 }
 
 .board {
   display: grid;
-  gap: 2px;
-  background: #111827;
-  padding: 0.5rem;
-  border-radius: 0.5rem;
+  gap: var(--cell-gap);
+  grid-template-columns: repeat(10, var(--cell-size));
+  grid-auto-rows: var(--cell-size);
+  width: min(calc(var(--cell-size) * 10 + var(--cell-gap) * 9), 100%);
+  margin: 0 auto;
 }
 
 .cell {
-  width: 30px;
-  height: 30px;
+  width: var(--cell-size);
+  height: var(--cell-size);
   background: rgba(30, 41, 59, 0.85);
-  border-radius: 0.3rem;
+  border-radius: clamp(0.25rem, 1vw, 0.3rem);
 }
 
 .cell.filled {
@@ -63,30 +124,31 @@
 
 .board-overlay {
   position: absolute;
-  inset: 1rem;
+  inset: clamp(0.75rem, 2vw, 1rem);
   display: flex;
   align-items: center;
   justify-content: center;
   background: rgba(15, 23, 42, 0.8);
-  border-radius: 1rem;
-  font-size: 1.2rem;
+  border-radius: clamp(0.75rem, 2vw, 1rem);
+  font-size: clamp(1rem, 2.5vw, 1.2rem);
   font-weight: 600;
   text-align: center;
+  padding: 1rem;
 }
 
 .sidebar {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  width: 260px;
+  width: min(280px, 100%);
 }
 
 .stats-panel,
 .next-queue,
 .game-controls {
   background: rgba(15, 23, 42, 0.8);
-  padding: 1rem;
-  border-radius: 0.75rem;
+  padding: clamp(0.75rem, 2vw, 1rem);
+  border-radius: 0.9rem;
   box-shadow: 0 12px 30px rgba(15, 23, 42, 0.35);
 }
 
@@ -94,6 +156,7 @@
 .next-queue h2,
 .game-controls h2 {
   margin: 0 0 0.75rem;
+  font-size: clamp(1.1rem, 2.6vw, 1.3rem);
 }
 
 .stats-panel dl {
@@ -147,17 +210,20 @@
 
 .mini-grid {
   display: grid;
-  gap: 2px;
-  width: 72px;
-  height: 72px;
-  background: rgba(30, 41, 59, 0.8);
-  padding: 4px;
+  gap: var(--cell-gap);
+  grid-template-columns: repeat(4, var(--mini-cell-size));
+  grid-auto-rows: var(--mini-cell-size);
+  padding: clamp(0.35rem, 1.2vw, 0.5rem);
   border-radius: 0.5rem;
+  background: rgba(30, 41, 59, 0.8);
+  margin: 0 auto;
 }
 
 .mini-cell {
   background: transparent;
-  border-radius: 0.25rem;
+  border-radius: 0.35rem;
+  width: var(--mini-cell-size);
+  height: var(--mini-cell-size);
 }
 
 .mini-cell.filled {
@@ -174,9 +240,10 @@
 
 .game-controls button {
   flex: 1 1 45%;
-  padding: 0.5rem 0.75rem;
+  min-width: 120px;
+  padding: 0.55rem 0.75rem;
   border: none;
-  border-radius: 0.5rem;
+  border-radius: 0.6rem;
   font-weight: 600;
   cursor: pointer;
   background: rgba(148, 163, 184, 0.2);
@@ -211,23 +278,144 @@
   gap: 0.25rem;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 960px) {
   .layout {
     flex-direction: column;
     align-items: center;
   }
 
   .sidebar {
-    width: 100%;
-    max-width: 480px;
+    width: min(500px, 100%);
+  }
+
+  .queue-list {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+  }
+
+  .queue-item {
+    flex-direction: column;
+    text-align: center;
   }
 
   .board-wrapper {
-    margin: 0 auto;
+    margin-bottom: 1rem;
+  }
+}
+
+@media (max-width: 720px) {
+  .touch-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 0.75rem;
+    width: 100%;
   }
 
-  .cell {
-    width: 24px;
-    height: 24px;
+  .touch-controls .touch-row {
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .board-wrapper {
+    width: 100%;
+  }
+
+  .board {
+    justify-items: center;
+  }
+
+  .sidebar {
+    gap: 0.75rem;
+  }
+
+  .game-controls .buttons {
+    gap: 0.4rem;
+  }
+
+  .game-controls button {
+    flex: 1 1 48%;
+    min-width: unset;
+    padding: 0.55rem 0.5rem;
+    font-size: 0.95rem;
+  }
+
+  .stats-panel dl {
+    gap: 0.4rem 0.75rem;
+  }
+}
+
+@media (max-width: 540px) {
+  .touch-controls .touch-button {
+    min-width: 64px;
+    min-height: 48px;
+    font-size: 1.05rem;
+  }
+
+  .touch-controls .touch-spacer {
+    width: 64px;
+  }
+
+  .board-wrapper {
+    padding: clamp(0.5rem, 4vw, 0.75rem);
+  }
+
+  .board-overlay {
+    inset: clamp(0.5rem, 4vw, 0.75rem);
+    font-size: clamp(0.95rem, 4vw, 1.1rem);
+    padding: 0.75rem;
+  }
+
+  .stats-panel,
+  .next-queue,
+  .game-controls {
+    padding: clamp(0.6rem, 4vw, 0.85rem);
+    border-radius: 0.75rem;
+  }
+
+  .game-controls .buttons {
+    flex-direction: column;
+  }
+
+  .game-controls button {
+    flex: 1 1 auto;
+    width: 100%;
+    font-size: 0.95rem;
+  }
+
+  .next-queue h2,
+  .stats-panel h2,
+  .game-controls h2 {
+    font-size: clamp(1rem, 4vw, 1.2rem);
+  }
+}
+
+@media (max-width: 420px) {
+  .touch-controls .touch-button {
+    min-width: 58px;
+    min-height: 44px;
+    font-size: 1rem;
+  }
+
+  .touch-controls .touch-spacer {
+    width: 58px;
+  }
+
+  .app {
+    padding: clamp(0.75rem, 5vw, 1rem);
+  }
+
+  .app-header h1 {
+    font-size: clamp(1.8rem, 8vw, 2.2rem);
+  }
+
+  .game-controls .keyboard-help {
+    font-size: 0.85rem;
+  }
+
+  .queue-item {
+    gap: 0.5rem;
   }
 }

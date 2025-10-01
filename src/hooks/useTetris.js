@@ -50,6 +50,19 @@ function createRunningState() {
   };
 }
 
+function didPieceExceedTop(piece) {
+  const { matrix, position } = piece;
+  for (let y = 0; y < matrix.length; y += 1) {
+    for (let x = 0; x < matrix[y].length; x += 1) {
+      if (!matrix[y][x]) continue;
+      if (position.y + y < 0) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 function attemptMove(state, dx, dy) {
   if (!state.current) return null;
   const candidate = {
@@ -73,13 +86,15 @@ function attemptMove(state, dx, dy) {
 function lockPiece(state) {
   if (!state.current) return state;
 
-  const mergedBoard = placePieceOnBoard(state.board, state.current);
+  const currentPiece = state.current;
+  const reachedTop = didPieceExceedTop(currentPiece);
+  const mergedBoard = placePieceOnBoard(state.board, currentPiece);
   const { board: clearedBoard, clearedLines } = clearCompletedLines(mergedBoard);
   const totalLines = state.lines + clearedLines;
   const level = calculateLevel(totalLines);
   const lineScore = (LINE_CLEAR_SCORES[clearedLines] || 0) * level;
   const { piece: nextPiece, queue } = takeNextPiece(state.queue);
-  const gameOver = hasCollision(clearedBoard, nextPiece);
+  const gameOver = reachedTop || hasCollision(clearedBoard, nextPiece);
 
   return {
     ...state,
@@ -140,6 +155,21 @@ function hardDrop(state) {
   return lockPiece(droppedState);
 }
 
+function continueFromGameOver(state) {
+  if (state.status !== 'gameover') return state;
+  const board = createEmptyBoard();
+  const { piece, queue } = takeNextPiece([]);
+  return {
+    ...state,
+    board,
+    queue,
+    current: piece,
+    status: 'running',
+    lastClear: 0,
+    level: calculateLevel(state.lines)
+  };
+}
+
 function reducer(state, action) {
   switch (action.type) {
     case 'START':
@@ -169,6 +199,8 @@ function reducer(state, action) {
     case 'HARD_DROP':
       if (state.status !== 'running') return state;
       return hardDrop(state);
+    case 'CONTINUE':
+      return continueFromGameOver(state);
     default:
       return state;
   }
@@ -190,6 +222,7 @@ export function useTetris() {
     []
   );
   const hardDrop = useCallback(() => dispatch({ type: 'HARD_DROP' }), []);
+  const continueGame = useCallback(() => dispatch({ type: 'CONTINUE' }), []);
 
   useEffect(() => {
     if (state.status !== 'running') return undefined;
@@ -209,6 +242,12 @@ export function useTetris() {
       if (state.status === 'ready' && event.code === 'Space') {
         event.preventDefault();
         start();
+        return;
+      }
+
+      if (state.status === 'gameover' && event.code === 'KeyC') {
+        event.preventDefault();
+        continueGame();
         return;
       }
 
@@ -252,7 +291,7 @@ export function useTetris() {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [state.status, moveLeft, moveRight, softDrop, rotateCounterClockwise, hardDrop, pause, resume, restart, start]);
+  }, [state.status, moveLeft, moveRight, softDrop, rotateCounterClockwise, hardDrop, pause, resume, restart, start, continueGame]);
 
   const boardWithFallingPiece = useMemo(
     () => projectPieceOntoBoard(state.board, state.current),
@@ -281,6 +320,7 @@ export function useTetris() {
     moveRight,
     softDrop,
     rotateCounterClockwise,
-    hardDrop
+    hardDrop,
+    continueGame
   };
 }

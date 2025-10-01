@@ -2,13 +2,14 @@ import { Board } from './components/Board.jsx';
 import { GameControls } from './components/GameControls.jsx';
 import { NextQueue } from './components/NextQueue.jsx';
 import { StatsPanel } from './components/StatsPanel.jsx';
+import { TouchControls } from './components/TouchControls.jsx';
 import { useTetris } from './hooks/useTetris.js';
 import './App.css';
 
 const STATUS_MESSAGE = {
   ready: 'スペースキーまたはスタートボタンで開始',
   paused: '一時停止中',
-  gameover: 'ゲームオーバー! スタートで再挑戦'
+  gameover: 'ゲームオーバー! コンティニュー (Cキー) で再挑戦'
 };
 
 export default function App() {
@@ -25,7 +26,12 @@ export default function App() {
     restart,
     pause,
     resume,
-    hardDrop
+    hardDrop,
+    continueGame,
+    moveLeft,
+    moveRight,
+    softDrop,
+    rotateCounterClockwise
   } = useTetris();
 
   const showOverlay = status !== 'running';
@@ -45,6 +51,13 @@ export default function App() {
               </div>
             )}
           </div>
+          <TouchControls
+            onLeft={moveLeft}
+            onRight={moveRight}
+            onUp={hardDrop}
+            onDown={softDrop}
+            onRotate={rotateCounterClockwise}
+          />
         </section>
         <aside className="sidebar">
           <StatsPanel
@@ -63,6 +76,7 @@ export default function App() {
             restart={restart}
             reset={reset}
             hardDrop={hardDrop}
+            continueGame={continueGame}
           />
         </aside>
       </main>

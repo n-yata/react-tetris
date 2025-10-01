@@ -5,7 +5,8 @@ export function GameControls({
   resume,
   restart,
   reset,
-  hardDrop
+  hardDrop,
+  continueGame
 }) {
   const isRunning = status === 'running';
   const isPaused = status === 'paused';
@@ -19,6 +20,11 @@ export function GameControls({
         {(isReady || isGameOver) && (
           <button type="button" onClick={start} className="primary">
             スタート
+          </button>
+        )}
+        {isGameOver && (
+          <button type="button" onClick={continueGame} className="primary">
+            コンティニュー
           </button>
         )}
         {isRunning && (
@@ -50,6 +56,7 @@ export function GameControls({
           <li>↓ : ソフトドロップ</li>
           <li>↑ : ハードドロップ</li>
           <li>Space : 左回転</li>
+          <li>C : コンティニュー (ゲームオーバー時)</li>
           <li>P : ポーズ / 再開</li>
           <li>R : リスタート</li>
         </ul>
